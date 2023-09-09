@@ -2,6 +2,7 @@
   <div
     class="poke-card-container"
     :style="{ backgroundColor: typeColor[types[0].type.name] }"
+    @click="handleClickCard(name)"
   >
     <div class="card-detail-container">
       <p class="poke-name">{{ parsePokeName(name) }}</p>
@@ -87,6 +88,7 @@ export default {
       font-size: 1.6rem;
       margin: 15px 0 0 15px;
       color: var(--TEXT_COLOR_2);
+      transition: 0.2s all ease;
     }
 
     & > .type-container {
@@ -108,6 +110,7 @@ export default {
         filter: brightness(1.1);
         border-radius: 4px;
         font-size: 12px;
+        transition: 0.2s all ease;
       }
     }
   }
@@ -137,6 +140,16 @@ export default {
 
   &:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  &:hover > .card-detail-container > p.poke-name {
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+    transform: scale(1.01);
+  }
+
+  &:hover > .card-detail-container > .type-container > .type-tag {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    transform: scale(1.01);
   }
 
   &:hover > .card-image-container > img.poke-avatar {
