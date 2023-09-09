@@ -37,13 +37,19 @@
 
       <div ref="scrollTrigger"></div>
     </div>
+
+    <DetailModal
+      :isOpen="showDetail"
+      :pokeName="selectedDetail"
+      @setIsOpen="handleShowDetail"
+    />
   </div>
 </template>
 
 <script>
 import { onBeforeMount, onMounted, onUnmounted, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { PokeCard, SearchBar } from "@/components";
+import { PokeCard, SearchBar, DetailModal } from "@/components";
 import { useAxios } from "@/composables";
 import { pokemonService } from "@/services";
 
@@ -52,6 +58,7 @@ export default {
   components: {
     PokeCard,
     SearchBar,
+    DetailModal,
   },
   setup() {
     const pokemonList = ref([]);
@@ -186,6 +193,8 @@ export default {
       handleShowDetail,
       handleSelectedDetail,
       headerStyle,
+      showDetail,
+      selectedDetail,
     };
   },
 };
