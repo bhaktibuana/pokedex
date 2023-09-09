@@ -37,6 +37,10 @@ html {
 }
 
 :root {
+  --PRIMARY_COLOR: rgb(29, 155, 240);
+  --BG_COLOR_0: rgb(255, 255, 255);
+  --BG_COLOR_1: rgb(247, 249, 249);
+  --BG_COLOR_2: rgb(219, 219, 219);
   --BG_COLOR_GREY: rgb(70, 90, 100);
   --TEXT_COLOR_0: rgb(15, 20, 25);
   --TEXT_COLOR_1: rgb(83, 100, 113);

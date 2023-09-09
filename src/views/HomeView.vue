@@ -1,32 +1,49 @@
 <template>
   <div class="home-view">
-    <div class="pokemon-list">
-      <PokeCard
-        v-for="(item, index) in pokemonList"
-        :key="index"
-        :pokemonData="item"
+    <div class="home-header" :style="headerStyle">
+      <div class="logo-container">
+        <img
+          v-lazy="require('@/assets/images/pokemon-300.webp')"
+          alt="appLogo"
+          class="app-logo"
+        />
+      </div>
+
+      <SearchBar
         @setShowDetail="handleShowDetail"
         @setSelectedDetail="handleSelectedDetail"
       />
     </div>
 
-    <div v-if="isListLoading" class="poke-spinner">
-      <img
-        v-lazy="require('@/assets/images/pokeball-50x50.webp')"
-        alt="pokeball"
-        className="pokeball"
-      />
-      <div className="pokebal-shadow"></div>
-    </div>
+    <div class="home-body">
+      <div class="pokemon-list">
+        <PokeCard
+          v-for="(item, index) in pokemonList"
+          :key="index"
+          :pokemonData="item"
+          @setShowDetail="handleShowDetail"
+          @setSelectedDetail="handleSelectedDetail"
+        />
+      </div>
 
-    <div ref="scrollTrigger"></div>
+      <div v-if="isListLoading" class="poke-spinner">
+        <img
+          v-lazy="require('@/assets/images/pokeball-50x50.webp')"
+          alt="pokeball"
+          className="pokeball"
+        />
+        <div className="pokebal-shadow"></div>
+      </div>
+
+      <div ref="scrollTrigger"></div>
+    </div>
   </div>
 </template>
 
 <script>
-import { onBeforeMount, onMounted, onUnmounted, ref } from "vue";
+import { onBeforeMount, onMounted, onUnmounted, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { PokeCard } from "@/components";
+import { PokeCard, SearchBar } from "@/components";
 import { useAxios } from "@/composables";
 import { pokemonService } from "@/services";
 
@@ -34,6 +51,7 @@ export default {
   name: "Home",
   components: {
     PokeCard,
+    SearchBar,
   },
   setup() {
     const pokemonList = ref([]);
@@ -44,6 +62,7 @@ export default {
     const scrollY = ref(window.scrollY);
     const showDetail = ref(false);
     const selectedDetail = ref("");
+    const headerStyle = ref({});
 
     const store = useStore();
     let observer;
@@ -104,6 +123,24 @@ export default {
       scrollY.value = window.scrollY;
     };
 
+    watch(scrollY, (val) => {
+      if (val >= 130) {
+        headerStyle.value = {
+          top: "-130px",
+          position: "fixed",
+          background:
+            "linear-gradient(112.83deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.8) 110.84%)",
+          "backdrop-filter": "blur(21px)",
+          "-webkit-backdrop-filter": "blur(21px)",
+        };
+      } else {
+        headerStyle.value = {
+          top: "0",
+          position: "absolute",
+        };
+      }
+    });
+
     onBeforeMount(() => {
       switch (true) {
         case window.screen.width <= 425:
@@ -148,6 +185,7 @@ export default {
       scrollTrigger,
       handleShowDetail,
       handleSelectedDetail,
+      headerStyle,
     };
   },
 };
@@ -155,12 +193,48 @@ export default {
 
 <style lang="scss" scoped>
 .home-view {
+  display: flex;
+  width: 100%;
+  height: auto;
+  min-height: 100vh;
+  /* flex-direction: column;
+  align-items: center;
+  justify-content: center; */
+  position: relative;
+}
+
+.home-header {
+  width: 100%;
+  height: 200px;
+  background-color: var(--LIGHT_COLOR);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  z-index: 3;
+
+  & > .logo-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+
+    & > img.app-logo {
+      height: 80px;
+    }
+  }
+}
+
+.home-body {
   width: 100%;
   height: auto;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  margin: 0 170px;
+  margin: 200px 170px 0 170px;
   position: relative;
 
   & > .pokemon-list {
@@ -173,28 +247,28 @@ export default {
   }
 
   @media screen and (max-width: 1280px) {
-    margin: 0 120px;
+    margin: 200px 120px 0 120px;
     & > .pokemon-list {
       grid-template-columns: repeat(3, 1fr);
     }
   }
 
   @media screen and (max-width: 1024px) {
-    margin: 0 120px;
+    margin: 200px 120px 0 120px;
     & > .pokemon-list {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media screen and (max-width: 768px) {
-    margin: 0 70px;
+    margin: 200px 70px 0 70px;
     & > .pokemon-list {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
   @media screen and (max-width: 425px) {
-    margin: 0 20px;
+    margin: 200px 20px 0 20px;
     & > .pokemon-list {
       grid-template-columns: repeat(1, 1fr);
     }
@@ -208,7 +282,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 20px;
+  padding: 20px;
   margin-bottom: 50px;
 
   & > img.pokeball {
@@ -243,7 +317,7 @@ export default {
     height: 5px;
     border-radius: 50%;
     margin-top: 10px;
-    background-color: grey;
+    background-color: var(--BG_COLOR_GREY);
     opacity: 0.5;
     animation-name: pokeball-shadow;
     animation-duration: 0.7s;
