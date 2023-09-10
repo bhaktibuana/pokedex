@@ -250,7 +250,7 @@ export default {
   align-items: center;
   flex-direction: column;
   background-color: transparent;
-  z-index: 1;
+  z-index: 2;
 
   @media screen and (max-width: 1280px) {
     width: calc(100% - 240px);
