@@ -1,55 +1,57 @@
 <template>
-  <div class="home-view">
-    <div class="home-header" :style="headerStyle">
-      <div class="logo-container">
-        <img
-          v-lazy="require('@/assets/images/pokemon-300.webp')"
-          alt="appLogo"
-          class="app-logo"
-        />
-      </div>
+  <HomeBg>
+    <div class="home-view">
+      <div class="home-header" :style="headerStyle">
+        <div class="logo-container">
+          <img
+            v-lazy="require('@/assets/images/pokemon-300.webp')"
+            alt="appLogo"
+            class="app-logo"
+          />
+        </div>
 
-      <SearchBar
-        @setShowDetail="handleShowDetail"
-        @setSelectedDetail="handleSelectedDetail"
-      />
-    </div>
-
-    <div class="home-body">
-      <div class="pokemon-list">
-        <PokeCard
-          v-for="(item, index) in pokemonList"
-          :key="index"
-          :pokemonData="item"
+        <SearchBar
           @setShowDetail="handleShowDetail"
           @setSelectedDetail="handleSelectedDetail"
         />
       </div>
 
-      <div v-if="isListLoading" class="poke-spinner">
-        <img
-          v-lazy="require('@/assets/images/pokeball-50x50.webp')"
-          alt="pokeball"
-          className="pokeball"
-        />
-        <div className="pokebal-shadow"></div>
+      <div class="home-body">
+        <div class="pokemon-list">
+          <PokeCard
+            v-for="(item, index) in pokemonList"
+            :key="index"
+            :pokemonData="item"
+            @setShowDetail="handleShowDetail"
+            @setSelectedDetail="handleSelectedDetail"
+          />
+        </div>
+
+        <div v-if="isListLoading" class="poke-spinner">
+          <img
+            v-lazy="require('@/assets/images/pokeball-50x50.webp')"
+            alt="pokeball"
+            className="pokeball"
+          />
+          <div className="pokebal-shadow"></div>
+        </div>
+
+        <div ref="scrollTrigger"></div>
       </div>
 
-      <div ref="scrollTrigger"></div>
+      <DetailModal
+        :isOpen="showDetail"
+        :pokeName="selectedDetail"
+        @setIsOpen="handleShowDetail"
+      />
     </div>
-
-    <DetailModal
-      :isOpen="showDetail"
-      :pokeName="selectedDetail"
-      @setIsOpen="handleShowDetail"
-    />
-  </div>
+  </HomeBg>
 </template>
 
 <script>
 import { onBeforeMount, onMounted, onUnmounted, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { PokeCard, SearchBar, DetailModal } from "@/components";
+import { PokeCard, SearchBar, DetailModal, HomeBg } from "@/components";
 import { useAxios } from "@/composables";
 import { pokemonService } from "@/services";
 
@@ -59,6 +61,7 @@ export default {
     PokeCard,
     SearchBar,
     DetailModal,
+    HomeBg,
   },
   setup() {
     const pokemonList = ref([]);
@@ -216,7 +219,7 @@ export default {
 .home-header {
   width: 100%;
   height: 200px;
-  background-color: var(--LIGHT_COLOR);
+  background-color: transparent;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
