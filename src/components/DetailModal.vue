@@ -493,10 +493,6 @@ export default {
       });
     });
 
-    watch(abilitiesData, (abilitiesDataVal) => {
-      console.log(abilitiesDataVal);
-    });
-
     watch(
       [isOpen, activeTab, pokemonDetail],
       ([isOpenVal, activeTabVal, pokemonDetailVal]) => {
