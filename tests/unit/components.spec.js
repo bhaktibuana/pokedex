@@ -1,5 +1,5 @@
 import { mount } from "@vue/test-utils";
-import { PokeCard, SearchBar } from "@/components";
+import { PokeCard, SearchBar, DetailModal } from "@/components";
 import { parsePokeName } from "@/utils";
 import { typeColor } from "@/constants";
 
@@ -98,4 +98,22 @@ describe("SearchBar Component", () => {
     expect(inputElement.element.value).toBe("");
     expect(wrapper.vm.searchStr).toBe("");
   });
+});
+
+describe("DetailModal Component", () => {
+  let wrapper;
+
+  beforeAll(() => {
+    wrapper = mount(DetailModal);
+  });
+
+  it("overlay display should be exist", () => {
+    const overlay = wrapper.find(".overlay");
+    expect(overlay.exists()).toBe(true);
+  });
+
+  it("detail modal container should be exist", () => {
+    const element = wrapper.find(".detail-modal-container");
+    expect(element.exists()).toBe(true);
+  })
 });
