@@ -9,7 +9,19 @@ const pokemonDetail = (param) => ({
   url: `/pokemon/${param}`,
 });
 
+const pokemonSpecies = (param) => ({
+  method: "GET",
+  url: `/pokemon-species/${param}`,
+});
+
+const pokemonAbilities = (param) => ({
+  method: "GET",
+  url: `/ability/${param}`,
+});
+
 export const pokemonService = {
   pokemonList,
   pokemonDetail,
+  pokemonSpecies,
+  pokemonAbilities,
 };
