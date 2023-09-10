@@ -38,7 +38,6 @@ export default {
 
 .area {
   background: linear-gradient(to top, #b7cce0, #e2e9ef, #ffffff);
-  background: -webkit-linear-gradient(to top, #b7cce0, #e2e9ef, #ffffff);
   width: 100%;
   height: 100vh;
   position: fixed;
