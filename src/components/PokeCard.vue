@@ -5,7 +5,10 @@
     @click="handleClickCard(name)"
   >
     <div class="card-detail-container">
-      <p class="poke-name">{{ parsePokeName(name) }}</p>
+      <div class="poke-name-container">
+        <p class="poke-name">{{ parsePokeName(name) }}</p>
+        <p class="poke-id">{{ parsePokeId(id) }}</p>
+      </div>
 
       <div class="type-container">
         <div
@@ -36,13 +39,14 @@
 </template>
 
 <script>
-import { parsePokeName } from "@/utils";
+import { parsePokeName, parsePokeId } from "@/utils";
 import { typeColor } from "@/constants";
 
 export default {
   name: "PokeCard",
   props: ["pokemonData"],
   setup({ pokemonData }, { emit }) {
+    const id = pokemonData.id;
     const name = pokemonData.name;
     const types = pokemonData.types;
     const image =
@@ -54,9 +58,11 @@ export default {
     };
 
     return {
+      id,
       name,
       types,
       image,
+      parsePokeId,
       parsePokeName,
       typeColor,
       handleClickCard,
@@ -83,12 +89,25 @@ export default {
     flex-direction: column;
     justify-content: space-between;
 
-    & > p.poke-name {
-      font-family: "VT323", monospace;
-      font-size: 1.6rem;
+    & > .poke-name-container {
+      display: flex;
       margin: 15px 0 0 15px;
-      color: var(--TEXT_COLOR_2);
-      transition: 0.2s all ease;
+      flex-direction: column;
+      gap: 3px;
+
+      & > p.poke-name {
+        font-family: "VT323", monospace;
+        font-size: 1.6rem;
+        color: var(--TEXT_COLOR_2);
+        transition: 0.2s all ease;
+      }
+
+      & > p.poke-id {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--TEXT_COLOR_2);
+        transition: 0.2s all ease;
+      }
     }
 
     & > .type-container {
@@ -142,7 +161,8 @@ export default {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }
 
-  &:hover > .card-detail-container > p.poke-name {
+  &:hover > .card-detail-container > .poke-name-container > p.poke-name,
+  &:hover > .card-detail-container > .poke-name-container > p.poke-id {
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
     transform: scale(1.01);
   }

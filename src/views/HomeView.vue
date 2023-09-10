@@ -105,6 +105,7 @@ export default {
 
           if (getPokemonDetail.isError.value) continue;
           currentPokemonList.push({
+            id: getPokemonDetail.response.value.id,
             name: getPokemonDetail.response.value.name,
             sprites: getPokemonDetail.response.value.sprites,
             types: getPokemonDetail.response.value.types,
