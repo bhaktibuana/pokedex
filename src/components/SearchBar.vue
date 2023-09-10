@@ -6,17 +6,18 @@
       </div>
 
       <input
+        ref="searchInput"
         class="search-input"
         type="text"
-        placeholder="Search Pokémon"
+        placeholder="Search Pokémon's name"
         @focus="isFocus = true"
-        @blur="handleSearchBlur"
         v-model="searchStr"
         @input="handleInputChange"
       />
     </div>
 
     <div
+      ref="searchInfo"
       class="search-info"
       :class="{ active: showInfo }"
       @click="clearBlurTimeout"
@@ -66,6 +67,7 @@
 
           <div class="pokemon-name-container">
             <p class="pokemon-name">{{ parsePokeName(item.name) }}</p>
+            <p class="pokemon-id">{{ parsePokeId(item.id) }}</p>
           </div>
         </div>
       </div>
@@ -74,10 +76,10 @@
 </template>
 
 <script>
-import { computed, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useAxios } from "@/composables";
 import { pokemonService } from "@/services";
-import { parseSearchStr, parsePokeName } from "@/utils";
+import { parseSearchStr, parsePokeName, parsePokeId } from "@/utils";
 import { typeColor } from "@/constants";
 
 export default {
@@ -89,12 +91,15 @@ export default {
     const searchStrLength = computed(() => searchStr.value.length);
     const isSearchLoading = ref(false);
     const searchData = ref([]);
+    const searchInfo = ref(null);
+    const searchInput = ref(null);
     let blurTimeout;
     let typingDelay;
 
     const handleClickItem = (pokemonName) => {
       emit("setShowDetail", true);
       emit("setSelectedDetail", pokemonName);
+      isFocus.value = false;
     };
 
     const handleInputChange = (event) => {
@@ -104,12 +109,28 @@ export default {
     const handleSearchBlur = () => {
       blurTimeout = setTimeout(() => {
         isFocus.value = false;
-        searchStr.value = "";
+        showInfo.value = false;
       }, 200);
     };
 
     const clearBlurTimeout = () => {
       clearTimeout(blurTimeout);
+    };
+
+    const handleClickOutside = (event) => {
+      const searchInfoElement = searchInfo.value;
+      const searchInputElement = searchInput.value;
+
+      if (searchInfoElement && searchInfoElement.contains(event.target)) {
+        return;
+      } else if (
+        searchInputElement &&
+        searchInputElement.contains(event.target)
+      ) {
+        return;
+      } else {
+        handleSearchBlur();
+      }
     };
 
     const getPokemonData = async (searchName) => {
@@ -154,6 +175,7 @@ export default {
 
           if (getPokemonDetail.isError.value) continue;
           pokemonList.push({
+            id: getPokemonDetail.response.value.id,
             name: getPokemonDetail.response.value.name,
             sprites: getPokemonDetail.response.value.sprites,
             types: getPokemonDetail.response.value.types,
@@ -189,6 +211,14 @@ export default {
       }, 500);
     });
 
+    onMounted(() => {
+      document.addEventListener("click", handleClickOutside);
+    });
+
+    onBeforeUnmount(() => {
+      document.removeEventListener("click", handleClickOutside);
+    });
+
     return {
       isFocus,
       showInfo,
@@ -201,6 +231,9 @@ export default {
       parsePokeName,
       typeColor,
       handleClickItem,
+      searchInfo,
+      searchInput,
+      parsePokeId,
     };
   },
 };
@@ -448,14 +481,20 @@ span.search-info-text {
   }
 
   & > .pokemon-name-container {
-    width: auto;
+    width: 100%;
     height: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 
     & > p.pokemon-name {
       font-size: 1rem;
+      font-weight: normal;
+      transition: all ease 0.15s;
+    }
+
+    & > p.pokemon-id {
+      font-size: 0.9rem;
       font-weight: normal;
       transition: all ease 0.15s;
     }
@@ -470,7 +509,8 @@ span.search-info-text {
     transform: scale(1.4);
   }
 
-  &:hover > .pokemon-name-container > p.pokemon-name {
+  &:hover > .pokemon-name-container > p.pokemon-name,
+  &:hover > .pokemon-name-container > p.pokemon-id {
     font-weight: bold;
   }
 }
