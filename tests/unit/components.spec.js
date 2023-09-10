@@ -15,6 +15,7 @@ describe("PokeCard Component", () => {
   let wrapper;
   const testProps = {
     pokemonData: {
+      id: 1,
       name: "awesome-pokemon",
       types: [
         {
@@ -115,5 +116,5 @@ describe("DetailModal Component", () => {
   it("detail modal container should be exist", () => {
     const element = wrapper.find(".detail-modal-container");
     expect(element.exists()).toBe(true);
-  })
+  });
 });
