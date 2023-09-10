@@ -11,7 +11,7 @@ module.exports = defineConfig({
       start_url: ".",
       display: "standalone",
       background_color: "#ffffff",
-      version: "0.1.0",
+      version: "1.0.0",
       icons: [
         {
           src: "./img/icons/android-chrome-192x192.png",
